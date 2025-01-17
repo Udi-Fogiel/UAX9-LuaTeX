@@ -51,74 +51,133 @@ local utfchar = utf.char
 local setmetatable = setmetatable
 local formatters = string.formatters
 
+require("chars.lua")
+local data       = characters.data
+characters.directions  = { }
+
+table.setmetatableindex(characters.directions,function(t,k)
+    local d = data[k]
+    if d then
+        local v = d.direction
+        if v then
+            t[k] = v
+            return v
+        end
+    end
+    t[k] = false -- maybe 'l'
+    return false
+end)
+
+characters.mirrors  = { }
+
+table.setmetatableindex(characters.mirrors,function(t,k)
+    local d = data[k]
+    if d then
+        local v = d.mirror
+        if v then
+            t[k] = v
+            return v
+        end
+    end
+    t[k] = false
+    return false
+end)
+
+characters.textclasses  = { }
+
+table.setmetatableindex(characters.textclasses,function(t,k)
+    local d = data[k]
+    if d then
+        local v = d.textclass
+        if v then
+            t[k] = v
+            return v
+        end
+    end
+    t[k] = false
+    return false
+end)
+
 local directiondata        = characters.directions
 local mirrordata           = characters.mirrors
 local textclassdata        = characters.textclasses
 
-local nuts                 = nodes.nuts
+local getnext              = node.direct.getnext
+local getprev              = node.direct.getprev
+local getid                = node.direct.getid
+local getsubtype           = node.direct.getsubtype
+local getlist              = node.direct.getlist
+local getchar              = node.direct.getchar
+local getattr              = node.direct.get_attribute
+local getprop              = node.direct.getproperty
+local getdirection         = node.direct.getdirection
+local isglyph              = node.direct.is_glyph
 
-local getnext              = nuts.getnext
-local getprev              = nuts.getprev
-local getid                = nuts.getid
-local getsubtype           = nuts.getsubtype
-local getlist              = nuts.getlist
-local getchar              = nuts.getchar
-local getattr              = nuts.getattr
-local getprop              = nuts.getprop
-local getdirection         = nuts.getdirection
-local isglyph              = nuts.isglyph
+local setprop              = node.direct.setproperty
+local setchar              = node.direct.setchar
+local setdirection         = node.direct.setdirection
+local setattrlist          = node.direct.setattributelist
 
-local setprop              = nuts.setprop
-local setchar              = nuts.setchar
-local setdirection         = nuts.setdirection
-local setattrlist          = nuts.setattrlist
+local properties           = node.direct.get_properties_table()
 
-local properties           = nodes.properties.data
+local remove_node          = node.direct.remove
+local insertnodeafter      = node.direct.insert_after
+local insertnodebefore     = node.direct.insert_before
 
-local remove_node          = nuts.remove
-local insertnodeafter      = nuts.insertafter
-local insertnodebefore     = nuts.insertbefore
+local todirect = node.direct.todirect
+local tonode = node.direct.tonode
 
-local startofpar           = nuts.startofpar
+local startofpar           = function(n)
+                                 local s = getsubtype(n)
+                                 return s == 0 or s == 2
+                             end
 
-local nodepool             = nuts.pool
-local new_direction        = nodepool.direction
+local new_direction        = function (dir,swap)
+                                 local t = node.direct.new("dir")
+                                 if not dir then
+                                     -- just a l2r start node
+                                 elseif swap then
+                                     setdirection(t,dir,true)
+                                else
+                                     setdirection(t,dir,false)
+                                end
+                                return t
+                             end
 
-local nodecodes            = nodes.nodecodes
+local nodecodes            = { }
 local gluecodes            = nodes.gluecodes
 
-local glyph_code           = nodecodes.glyph
-local glue_code            = nodecodes.glue
-local hlist_code           = nodecodes.hlist
-local vlist_code           = nodecodes.vlist
-local math_code            = nodecodes.math
-local dir_code             = nodecodes.dir
-local par_code             = nodecodes.par
-local penalty_code         = nodecodes.penalty
+local glyph_code           = node.id("glyph")
+local glue_code            = node.id("glue")
+local hlist_code           = node.id("hlist")
+local vlist_code           = node.id("vlist")
+local math_code            = node.id("math")
+local dir_code             = node.id("dir")
+local par_code             = node.id("local_par")
+local penalty_code         = node.id("penalty")
 
-local parfillskip_code     = gluecodes.parfillskip
-local parfillleftskip_code = gluecodes.parfillleftskip
+local parfillskip_code     = 15
+local parfillleftskip_code = nil -- LuaMeTaTex only
 
-local dirvalues            = nodes.dirvalues
-local lefttoright_code     = dirvalues.lefttoright
-local righttoleft_code     = dirvalues.righttoleft
+local lefttoright_code     = 0
+local righttoleft_code     = 1
 
 local maximum_stack        = 0xFF
 
-local a_directions         = attributes.private('directions')
+local a_directions         = luatexbase.new_attribute('directions')
 
-local directions           = typesetters.directions
-local setcolor             = directions.setcolor
-local getfences            = directions.getfences
+-- local directions           = typesetters.directions
+-- local setcolor             = directions.setcolor
+-- local getfences            = directions.getfences
 
-local remove_controls      = true  directives.register("typesetters.directions.removecontrols",function(v) remove_controls  = v end)
+local remove_controls      = true  -- directives.register("typesetters.directions.removecontrols",function(v) remove_controls  = v end)
 ----- analyze_fences       = true  directives.register("typesetters.directions.analyzefences", function(v) analyze_fences   = v end)
 
-local report_directions    = logs.reporter("typesetting","directions three")
+local report_directions    = function(...) end
 
-local trace_directions     = false trackers.register("typesetters.directions",         function(v) trace_directions = v end)
-local trace_details        = false trackers.register("typesetters.directions.details", function(v) trace_details    = v end)
-local trace_list           = false trackers.register("typesetters.directions.list",    function(v) trace_list       = v end)
+local trace_directions     = false -- trackers.register("typesetters.directions",         function(v) trace_directions = v end)
+local trace_details        = false -- trackers.register("typesetters.directions.details", function(v) trace_details    = v end)
+local trace_list           = false -- trackers.register("typesetters.directions.list",    function(v) trace_list       = v end)
 
 -- strong (old):
 --
@@ -1011,10 +1070,10 @@ end
 -- have more than one node. Actually, we only enter this function when we
 -- do have a glyph!
 
-local function process(head,direction,only_one,where)
+local function process(head,where,direction,only_one)
     -- for the moment a whole paragraph property
     local attr = getattr(head,a_directions)
-    local analyze_fences = getfences(attr)
+    -- local analyze_fences = getfences(attr)
     --
     local list, size = build_list(head,where)
     local baselevel, dirfound = get_baselevel(head,list,size,direction)
@@ -1023,7 +1082,7 @@ local function process(head,direction,only_one,where)
         report_directions("before : %s",show_list(list,size,"original"))
     end
     resolve_explicit(list,size,baselevel)
-    resolve_levels(list,size,baselevel,analyze_fences)
+    resolve_levels(list,size,baselevel,true)
     insert_dir_points(list,size)
     if trace_details then
         report_directions("after  : %s",show_list(list,size,"direction"))
@@ -1032,9 +1091,5 @@ local function process(head,direction,only_one,where)
     return apply_to_list(list,size,head,baselevel)
 end
 
-local variables = interfaces.variables
-
-directions.installhandler(variables.one,    process) -- for old times sake
-directions.installhandler(variables.two,    process) -- for old times sake
-directions.installhandler(variables.three,  process) -- for old times sake
-directions.installhandler(variables.unicode,process)
+luatexbase.add_to_callback("pre_shaping_filter", function(head,where,direction) 
+    return tonode(process(todirect(head),where,direction,true)) end, "Bidi")
