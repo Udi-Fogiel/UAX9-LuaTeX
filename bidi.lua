@@ -1091,5 +1091,6 @@ local function process(head,where,direction,only_one)
     return apply_to_list(list,size,head,baselevel)
 end
 
-luatexbase.add_to_callback("pre_shaping_filter", function(head,where,direction) 
+luatexbase.add_to_callback("pre_shaping_filter", function(head,where,direction)
+    if where == "fin_row" then return true end
     return tonode(process(todirect(head),where,direction,true)) end, "Bidi")
