@@ -129,7 +129,7 @@ local tonode = node.direct.tonode
 
 local startofpar           = function(n)
                                  local s = getsubtype(n)
-                                 return s == 0 or s == 2
+                                 return s == 0 or s == 2 or s == 3
                              end
 
 local new_direction        = function (dir,swap)
