@@ -3,7 +3,7 @@ if not modules then modules = { } end modules ['typo-duc'] = {
     comment   = "companion to typo-dir.mkiv",
     author    = "Hans Hagen, PRAGMA-ADE, Hasselt NL",
     copyright = "PRAGMA ADE / ConTeXt Development Team",
-    license   = "see context related readme files",
+    license   = "GPL v2.0",
     comment   = "Unicode bidi (sort of) variant c",
 }
 
@@ -51,7 +51,6 @@ local utfchar = utf.char
 local setmetatable = setmetatable
 local formatters = string.formatters
 
-require("chars.lua")
 local characters = characters or { }
 local data       = require("chars.lua")
 characters.directions  = { }
