@@ -52,7 +52,8 @@ local setmetatable = setmetatable
 local formatters = string.formatters
 
 require("chars.lua")
-local data       = characters.data
+local characters = characters or { }
+local data       = require("chars.lua")
 characters.directions  = { }
 
 table.setmetatableindex(characters.directions,function(t,k)
@@ -1082,7 +1083,7 @@ local function process(head,where,direction,only_one)
         report_directions("before : %s",show_list(list,size,"original"))
     end
     resolve_explicit(list,size,baselevel)
-    resolve_levels(list,size,baselevel,true)
+    resolve_levels(list,size,baselevel,false)
     insert_dir_points(list,size)
     if trace_details then
         report_directions("after  : %s",show_list(list,size,"direction"))
