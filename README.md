@@ -6,7 +6,7 @@ The unibidi-lua LuaTeX package is a port of the unicode bidi algorithm
 implementation of the ConTeXt project to OpTeX, LuaLaTeX and Plain LuaTeX.
 
 ## Maintenance
-This package is currently maintained at https://github.com/Udi-Fogiel/UAX9-LuaTeX.
+This package is currently maintained at https://github.com/Udi-Fogiel/unibidi-lua.
 
 Issues can be reported at the issue tracker.
 
