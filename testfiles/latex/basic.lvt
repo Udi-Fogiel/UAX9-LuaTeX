@@ -1,6 +1,6 @@
 \input{regression-test.tex}
 \documentclass{article}
-\usepackage{unibidi-lua.sty}
+\usepackage{unibidi-lua}
 \begin{document}
 \pardirection=1\textdirection=1
 \font\foo={name:DavidCLM}\foo
