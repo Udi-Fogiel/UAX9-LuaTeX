@@ -1,12 +1,10 @@
-if not modules then modules = { } end modules ['char-def'] = {  version   = 1.001,
-    comment   = "companion to char-ini.mkiv",
-    author    = "Hans Hagen, PRAGMA-ADE, Hasselt NL",
-    copyright = "PRAGMA ADE / ConTeXt Development Team",
-    license   = "GPL v2.0",
-    dataonly  = true,
-}
-
 --[[
+    version = 0.1
+    author    = Hans Hagen, PRAGMA-ADE, Hasselt NL, Udi Fogiel
+    copyright = PRAGMA ADE / ConTeXt Development Team
+    license   = GPL v2.0
+    dataonly  = true
+
 The first version of this table was generated from unicode tables but after that was
 mostly updated manual using data present in ConTeXt and elsewhere. I did my best to
 make this table as complete as needed for proper use in ConTeXt MkIV. All errors are
@@ -22,6 +20,8 @@ adapting this file.
 Todo: get rid of specials = { "font", ... } in math ... we have already vectors.
 Todo: remove adobe names (move them to the glyph list, done)
 Todo: remove some never used context names (idem)
+
+This file is a derivative of char-def.lua from the ConTeXt project.
 
 ]]--
 

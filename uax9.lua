@@ -1,50 +1,53 @@
-if not modules then modules = { } end modules ['typo-duc'] = {
-    version   = 1.001,
-    comment   = "companion to typo-dir.mkiv",
-    author    = "Hans Hagen, PRAGMA-ADE, Hasselt NL",
-    copyright = "PRAGMA ADE / ConTeXt Development Team",
-    license   = "GPL v2.0",
-    comment   = "Unicode bidi (sort of) variant c",
-}
+--[[
+    version   = 0.1,
+    author    = Hans Hagen, PRAGMA-ADE, Hasselt NL, Udi Fogiel
+    copyright = PRAGMA ADE / ConTeXt Development Team
+    license   = GPL v2.0
+    comment   = Unicode bidi (sort of)
 
--- This is a follow up on typo-uda which itself is a follow up on t-bidi by Khaled Hosny which
--- in turn is based on minibidi.c from Arabeyes. This is a further optimizations, as well as
--- an update on some recent unicode bidi developments. There is (and will) also be more control
--- added. As a consequence this module is somewhat slower than its precursor which itself is
--- slower than the one-pass bidi handler. This is also a playground and I might add some plugin
--- support. However, in the meantime performance got a bit better and this third variant is again
--- some 10% faster than the second variant.
 
--- todo (cf html):
---
--- normal            The element does not offer a additional level of embedding with respect to the bidirectional algorithm. For inline elements implicit reordering works across element boundaries.
--- embed             If the element is inline, this value opens an additional level of embedding with respect to the bidirectional algorithm. The direction of this embedding level is given by the direction property.
--- bidi-override     For inline elements this creates an override. For block container elements this creates an override for inline-level descendants not within another block container element. This means that inside the element, reordering is strictly in sequence according to the direction property; the implicit part of the bidirectional algorithm is ignored.
--- isolate           This keyword indicates that the element's container directionality should be calculated without considering the content of this element. The element is therefore isolated from its siblings. When applying its bidirectional-resolution algorithm, its container element treats it as one or several U+FFFC Object Replacement Character, i.e. like an image.
--- isolate-override  This keyword applies the isolation behavior of the isolate keyword to the surrounding content and the override behavior o f the bidi-override keyword to the inner content.
--- plaintext         This keyword makes the elements directionality calculated without considering its parent bidirectional state or the value of the direction property. The directionality is calculated using the P2 and P3 rules of the Unicode Bidirectional Algorithm.
---                   This value allows to display data which has already formatted using a tool following the Unicode Bidirectional Algorithm.
---
--- todo: check for introduced errors
--- todo: reuse list, we have size, so we can just change values (and auto allocate when not there)
--- todo: reuse the stack
--- todo: no need for a max check
--- todo: collapse bound similar ranges (not ok yet)
--- todo: combine some sweeps
--- todo: removing is not needed when we inject at the same spot (only chnage the dir property)
--- todo: isolated runs (isolating runs are similar to bidi=local in the basic analyzer)
+This is a follow up on typo-uda which itself is a follow up on t-bidi by Khaled Hosny which
+in turn is based on minibidi.c from Arabeyes. This is a further optimizations, as well as
+an update on some recent unicode bidi developments. There is (and will) also be more control
+added. As a consequence this module is somewhat slower than its precursor which itself is
+slower than the one-pass bidi handler. This is also a playground and I might add some plugin
+support. However, in the meantime performance got a bit better and this third variant is again
+some 10% faster than the second variant.
 
--- todo: check unicode addenda (from the draft):
---
--- Added support for canonical equivalents in BD16.
--- Changed logic in N0 to not check forwards for context in the case of enclosed text opposite the embedding direction.
--- Major extension of the algorithm to allow for the implementation of directional isolates and the introduction of new isolate-related values to the Bidi_Class property.
--- Adds BD8, BD9, BD10, BD11, BD12, BD13, BD14, BD15, and BD16, Sections 2.4 and 2.5, and Rules X5a, X5b, X5c and X6a.
--- Extensively revises Section 3.3.2, Explicit Levels and Directions and its existing X rules to formalize the algorithm for matching a PDF with the embedding or override initiator whose scope it terminates.
--- Moves Rules X9 and X10 into a separate new Section 3.3.3, Preparations for Implicit Processing.
--- Modifies Rule X10 to make the isolating run sequence the unit to which subsequent rules are applied.
--- Modifies Rule W1 to change an NSM preceded by an isolate initiator or PDI into ON.
--- Adds Rule N0 and makes other changes to Section 3.3.5, Resolving Neutral and Isolate Formatting Types to resolve bracket pairs to the same level.
+todo (cf html):
+
+* normal            The element does not offer a additional level of embedding with respect to the bidirectional algorithm. For inline elements implicit reordering works across element boundaries.
+* embed             If the element is inline, this value opens an additional level of embedding with respect to the bidirectional algorithm. The direction of this embedding level is given by the direction property.
+* bidi-override     For inline elements this creates an override. For block container elements this creates an override for inline-level descendants not within another block container element. This means that inside the element, reordering is strictly in sequence according to the direction property; the implicit part of the bidirectional algorithm is ignored.
+* isolate           This keyword indicates that the element's container directionality should be calculated without considering the content of this element. The element is therefore isolated from its siblings. When applying its bidirectional-resolution algorithm, its container element treats it as one or several U+FFFC Object Replacement Character, i.e. like an image.
+* isolate-override  This keyword applies the isolation behavior of the isolate keyword to the surrounding content and the override behavior o f the bidi-override keyword to the inner content.
+* plaintext         This keyword makes the elements directionality calculated without considering its parent bidirectional state or the value of the direction property. The directionality is calculated using the P2 and P3 rules of the Unicode Bidirectional Algorithm.
+                   This value allows to display data which has already formatted using a tool following the Unicode Bidirectional Algorithm.
+
+ todo: check for introduced errors
+ todo: reuse list, we have size, so we can just change values (and auto allocate when not there)
+ todo: reuse the stack
+ todo: no need for a max check
+ todo: collapse bound similar ranges (not ok yet)
+ todo: combine some sweeps
+ todo: removing is not needed when we inject at the same spot (only chnage the dir property)
+ todo: isolated runs (isolating runs are similar to bidi=local in the basic analyzer)
+
+ todo: check unicode addenda (from the draft):
+
+Added support for canonical equivalents in BD16.
+Changed logic in N0 to not check forwards for context in the case of enclosed text opposite the embedding direction.
+Major extension of the algorithm to allow for the implementation of directional isolates and the introduction of new isolate-related values to the Bidi_Class property.
+Adds BD8, BD9, BD10, BD11, BD12, BD13, BD14, BD15, and BD16, Sections 2.4 and 2.5, and Rules X5a, X5b, X5c and X6a.
+Extensively revises Section 3.3.2, Explicit Levels and Directions and its existing X rules to formalize the algorithm for matching a PDF with the embedding or override initiator whose scope it terminates.
+Moves Rules X9 and X10 into a separate new Section 3.3.3, Preparations for Implicit Processing.
+Modifies Rule X10 to make the isolating run sequence the unit to which subsequent rules are applied.
+Modifies Rule W1 to change an NSM preceded by an isolate initiator or PDI into ON.
+Adds Rule N0 and makes other changes to Section 3.3.5, Resolving Neutral and Isolate Formatting Types to resolve bracket pairs to the same level.
+
+This file is a derivative of typo-duc.lua from the ConTeXt project.
+
+]]--
 
 local concat = table.concat
 local utfchar = utf.char
