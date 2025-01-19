@@ -24,15 +24,15 @@ The macro accepts three keyword:
    enable step N0 of the UAX9 algorithm.
 \enditems
 
-To use the package, you can do `\load[unibidi-lua]`, `\usepackage{unibidi-lua}` or `\input unibidi-lua`
-if you are using \OpTeX, \LaTeX or Plain respectively. The process function
+To use the package, as with other packages, you can do `\load[unibidi-lua]`, `\usepackage{unibidi-lua}` or `\input unibidi-lua`
+if you are using \OpTeX, \LaTeX or Plain respectively. The process function 
 is added to the `pre_shaping_filter` when you load the package.
 
 \_doc
 \verbchar`
 %  optex -jobname unibidi-lua-doc '\docgen unibidi-lua'
 \load [doc]
-
+\overfullrule=0pt
 \tit Unicode Bidi Algorithm Implementation for \OpTeX, \LaTeX, and Plain
 \hfill Version: 0.1, 2025-01-19 \par
 \centerline{\it Udi Fogiel, 2025}

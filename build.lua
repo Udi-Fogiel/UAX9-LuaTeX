@@ -14,6 +14,7 @@ packtdszip = true
 typesetexe = "optex"
 typesetfiles = {"unibidi-lua.opm"}
 ctanzip = module
+tdsroot = "luatex"
 
 checkconfigs = {"configfiles/config-optex", "configfiles/config-latex", "configfiles/config-plain"}
 specialformats = specialformats or { }
@@ -28,12 +29,8 @@ tdslocations =
     "tex/luatex/unibidi-lua/*.lua",
   }
 
-specialtypesetting = specialtypesetting or {}
-function optex_doc()
-    local error  = run('.', "optex -jobname unibidi-lua-doc '\\docgen unibidi-lua'")
-    return error
-end
-specialtypesetting["unibidi-lua.opm"] = {func = optex_doc}
+typesetopts = "-interaction=nonstopmode -jobname unibidi-lua-doc"
+typesetcmds = "\\docgen unibidi-lua \\skiptoeol"
 
 tagfiles = sourcefiles
 function update_tag(file,content,tagname,tagdate)
