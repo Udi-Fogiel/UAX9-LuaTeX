@@ -58,7 +58,7 @@ characters.directions  = { }
 table.setmetatableindex(characters.directions,function(t,k)
     local d = data[k]
     if d then
-        local v = d.direction
+        local v = d.d
         if v then
             t[k] = v
             return v
@@ -73,7 +73,7 @@ characters.mirrors  = { }
 table.setmetatableindex(characters.mirrors,function(t,k)
     local d = data[k]
     if d then
-        local v = d.mirror
+        local v = d.m
         if v then
             t[k] = v
             return v
@@ -88,7 +88,7 @@ characters.textclasses  = { }
 table.setmetatableindex(characters.textclasses,function(t,k)
     local d = data[k]
     if d then
-        local v = d.textclass
+        local v = d.tc
         if v then
             t[k] = v
             return v
