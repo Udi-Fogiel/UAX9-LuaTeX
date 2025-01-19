@@ -106,17 +106,12 @@ local getnext              = node.direct.getnext
 local getprev              = node.direct.getprev
 local getid                = node.direct.getid
 local getsubtype           = node.direct.getsubtype
-local getlist              = node.direct.getlist
 local getchar              = node.direct.getchar
 local getattr              = node.direct.get_attribute
-local getprop              = node.direct.getproperty
 local getdirection         = node.direct.getdirection
-local isglyph              = node.direct.is_glyph
 
-local setprop              = node.direct.setproperty
 local setchar              = node.direct.setchar
 local setdirection         = node.direct.setdirection
-local setattrlist          = node.direct.setattributelist
 
 local properties           = node.direct.get_properties_table()
 
