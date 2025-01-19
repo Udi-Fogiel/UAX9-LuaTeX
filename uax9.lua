@@ -1143,7 +1143,7 @@ local function interface()
   
     local tok = get_next()
     if tok.tok ~= relax.tok then
-        texerror("uax9: wrong syntax in \\lualineno",
+        texerror("uax9: wrong syntax in \\uax9",
                 {"There's a '" .. (tok.csname or uni_char(tok.mode)) .. "' out of place." })
         put_next(tok)
     end

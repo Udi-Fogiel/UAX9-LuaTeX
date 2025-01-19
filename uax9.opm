@@ -1,5 +1,5 @@
 % Optional comments
-\_codedecl \uaxnine {Line numbering <0.1, 2025-01-19>}
+\_codedecl \uaxnine {Unicode Bidi Algorithm for OpTeX <0.1, 2025-01-19>}
 
 \_initunifonts
 \_directlua{require('uax9.lua')}
