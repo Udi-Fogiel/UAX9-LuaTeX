@@ -7,7 +7,7 @@ module = "uax9"
 stdengine    = "luatex"
 checkengines = {"luatex"}
 checkruns = 1
-sourcefiles = {"*.opm", "*.sty", "*.lua", ".tex"}
+sourcefiles = {"*.opm", "*.sty", "*.lua", "*.tex"}
 installfiles = sourcefiles
 packtdszip = true
 typesetexe = "optex"
@@ -15,6 +15,7 @@ typesetfiles = {"uax9.opm"}
 ctanzip = module
 
 checkconfigs = {"configfiles/config-optex", "configfiles/config-latex", "configfiles/config-plain"}
+specialformats = specialformats or { }
 specialformats.optex  = {luatex = {binary = "optex", format = ""}}
 specialformats.plain  = {luatex = {binary = "luahbtex", format = ""}}
 
@@ -39,7 +40,7 @@ function update_tag(file,content,tagname,tagdate)
       "Unicode Bidi Algorithm for OpTeX <%d+.%d+, %d%d%d%d-%d%d-%d%d",
       "Unicode Bidi Algorithm for OpTeX <" .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.lua$") then
-    return return string.gsub(content,
+    return string.gsub(content,
       "version   = %d+.%d+, %d%d%d%d-%d%d-%d%d",
       "version   = " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.sty$") then
@@ -47,7 +48,7 @@ function update_tag(file,content,tagname,tagdate)
       "{uax9} [%d%d%d%d-%d%d-%d%d v%d+.%d+.%d+",
       "{uax9} [" .. tagdate .. " v" .. tagname)
   elseif string.match(file, "%.tex$") then
-    return return string.gsub(content,
+    return string.gsub(content,
       "version %d+.%d+, %d%d%d%d-%d%d-%d%d",
       "version " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.md$") then

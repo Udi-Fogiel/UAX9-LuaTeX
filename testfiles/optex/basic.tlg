@@ -1,0 +1,44 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+> \box...=
+\hbox(6.95833+1.06667)x130.85832, direction TRT
+.\begindir TRT
+.\foo ש
+.\foo ל
+.\foo ו
+.\foo ם
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\foo )
+.\foo (
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\foo ע
+.\foo ו
+.\foo ל
+.\foo ם
+.\foo !
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\begindir TLT
+.\foo H
+.\foo e
+.\foo l
+.\foo l
+.\foo o
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\foo (
+.\foo )
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\foo W
+.\foo o
+.\foo r
+.\foo l
+.\foo d
+.\foo !
+.\glue(\spaceskip) 3.5 plus 1.75 minus 1.16667
+.\foo 1
+.\foo 2
+.\foo 3
+.\enddir TLT
+! OK.
+<to be read again> 
+\begingroup 
+l. ...\START\showbox0\END

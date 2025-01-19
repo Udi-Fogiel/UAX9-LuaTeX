@@ -1,3 +1,4 @@
+build/
 test.tex
 *.pdf
 *.log
@@ -8,3 +9,4 @@ test.tex
 *.lot
 *.lof
 *.dvi
+*.zip
