@@ -33,7 +33,7 @@ is added to the `pre_shaping_filter` when you load the package.
 %  optex -jobname uax9-doc '\docgen uax9'
 \load [doc]
 
-\tit UAX9 implementation for \OpTeX, \LaTeX, and Palin
+\tit UAX9 implementation for \OpTeX, \LaTeX, and Plain
 \hfill Version: 0.1, 2025-01-19 \par
 \centerline{\it Udi Fogiel, 2025}
 \parindent0pt\parskip5pt\parfillskip=20ptplus1fill
