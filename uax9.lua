@@ -46,7 +46,7 @@ if not modules then modules = { } end modules ['typo-duc'] = {
 -- Modifies Rule W1 to change an NSM preceded by an isolate initiator or PDI into ON.
 -- Adds Rule N0 and makes other changes to Section 3.3.5, Resolving Neutral and Isolate Formatting Types to resolve bracket pairs to the same level.
 
-local insert, remove, unpack, concat = table.insert, table.remove, table.unpack, table.concat
+local concat = table.concat
 local utfchar = utf.char
 local setmetatable = setmetatable
 local formatters = string.formatters
@@ -1060,11 +1060,10 @@ end
 -- have more than one node. Actually, we only enter this function when we
 -- do have a glyph!
 
-local function process(head,where,direction,only_one)
-    -- for the moment a whole paragraph property
-    local attr = getattr(head,a_directions)
-    -- local analyze_fences = getfences(attr)
-    --
+local analyze_fences = false
+local function process(head,where,direction)
+    if where == "fin_row" then return true end
+    head = todirect(head)
     local list, size = build_list(head,where)
     local baselevel, dirfound = get_baselevel(head,list,size,direction)
     if trace_details then
@@ -1072,15 +1071,90 @@ local function process(head,where,direction,only_one)
         report_directions("before : %s",show_list(list,size,"original"))
     end
     resolve_explicit(list,size,baselevel)
-    resolve_levels(list,size,baselevel,false)
+    resolve_levels(list,size,baselevel,analyze_fences)
     insert_dir_points(list,size)
     if trace_details then
         report_directions("after  : %s",show_list(list,size,"direction"))
         report_directions("result : %s",show_done(list,size))
     end
-    return apply_to_list(list,size,head,baselevel)
+    return tonode(apply_to_list(list,size,head,baselevel))
 end
 
-luatexbase.add_to_callback("pre_shaping_filter", function(head,where,direction)
-    if where == "fin_row" then return true end
-    return tonode(process(todirect(head),where,direction,true)) end, "Bidi")
+local put_next = token.put_next
+local get_next = token.get_next
+local scan_keyword = token.scan_keyword
+local scan_toks = token.scan_toks
+
+local relax
+do
+  local prefix = 'u@a^x&9_'
+  while token.is_defined(prefix .. 'let') or token.is_defined(prefix .. 'relax') do
+    prefix = prefix .. 'u@a^x&9_'
+  end
+  local undef = token.create(prefix .. 'relax')
+  tex.enableprimitives(prefix,{'relax', 'let'})
+  local function frozentok(name)
+      local tok = token.create(prefix .. name)
+      return token.new(tok.mode, tok.command)
+  end
+  relax = frozentok'relax'
+  let = frozentok'let'
+  tex.runtoks(function()
+      for _,csname in ipairs({'relax', 'let'}) do
+          put_next(let, token.create(prefix .. csname), undef)
+      end
+  end)
+end
+
+local enabled = true
+local function interface()
+    local saved_endlinechar = tex.endlinechar
+    tex.endlinechar = 32
+    local toks = scan_toks()
+    tex.endlinechar = saved_endlinechar
+    put_next(relax)
+    put_next(toks)
+
+    while true do
+        if scan_keyword('enable') then
+            if not enabled then
+                enabled = true
+                luatexbase.add_to_callback("pre_shaping_filter", process, "UAX9")
+            end
+        elseif scan_keyword('disable') then
+            if enabled then
+                enabled = false
+                luatexbase.remove_from_callback("pre_shaping_filter", "UAX9")
+            end
+        elseif scan_keyword('fences') then
+            scan_keyword('=')
+            if scan_keyword('true') then
+                analyze_fences = true
+            elseif scan_keyword('false') then
+                analyze_fences = false
+            end
+        else
+            break
+        end
+    end
+  
+    local tok = get_next()
+    if tok.tok ~= relax.tok then
+        texerror("uax9: wrong syntax in \\lualineno",
+                {"There's a '" .. (tok.csname or uni_char(tok.mode)) .. "' out of place." })
+        put_next(tok)
+    end
+  
+end
+
+do
+  if token.is_defined('uaxnine') then
+      texio.write_nl('log', "uax9: redefining \\uaxnine")
+  end
+  local function_table = lua.get_functions_table()
+  local luafnalloc = luatexbase and luatexbase.new_luafunction and luatexbase.new_luafunction('uaxnine') or #function_table + 1
+  token.set_lua('uaxnine', luafnalloc)
+  function_table[luafnalloc] = interface
+end
+
+luatexbase.add_to_callback("pre_shaping_filter", process, "UAX9")
