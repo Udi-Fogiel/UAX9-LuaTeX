@@ -1,0 +1,48 @@
+% Optional comments
+\_codedecl \uaxnine {Line numbering <0.1, 2025-01-19>}
+
+\_initunifonts
+\_directlua{require('uax9.lua')}
+
+\_endcode
+
+This package is still in early phase, and the interface
+might still change.
+The requirements are the \LuaTeX/ engine,
+and the `luaotfload` font loader.
+
+\def\key #1:{{\bf #1:}\hskip1em\ignorespaces}
+Currently there is only only one macro, `\uaxnine`,
+which accepts a key-value pairs separated by a space.
+The macro accepts three keyword:
+\begitems \style O
+* \key enable: This key adds uax9's process function to the
+   `pre_shaping_filter` callback. It does not accept a value.
+* \key disable: This key removes uax9's process function from the
+   `pre_shaping_filter` callback. It does not accept a value.
+* \key fences: This key accepts a boolean value. It allows to disable or
+   enable step N0 of the UAX9 algorithm.
+\enditems
+
+To use the package, you can do `\load[uax9]`, `\usepackage{uax9}` or `\input uax9`
+if you are using \OpTeX, \LaTeX or Plain respectively. The process function
+is added to the `pre_shaping_filter` when you load the package.
+
+\_doc
+\verbchar`
+%  optex -jobname uax9-doc '\docgen uax9'
+\load [doc]
+
+\tit UAX9 implementation for \OpTeX, \LaTeX, and Palin
+\hfill Version: 0.1, 2025-01-19 \par
+\centerline{\it Udi Fogiel, 2025}
+\parindent0pt\parskip5pt\parfillskip=20ptplus1fill
+The UAX9 TeX packge is an implementation of the \ulink[https://www.unicode.org/reports/tr9/]
+{Unicode Annex \#9} for the \OpTeX, \LaTeX/ and Plain \LuaTeX/ formats. It allows to typesset
+bidirectional documents without the need of a special markup.
+
+\printdoctail uax9.opm % prints the documentation written after \_endcode
+\bye
+\_cod
+
+\endinput
