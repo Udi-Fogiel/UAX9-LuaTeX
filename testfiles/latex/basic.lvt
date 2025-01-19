@@ -1,0 +1,8 @@
+\input{regression-test.tex}
+\documentclass{article}
+\usepackage{uax9}
+\begin{document}
+\pardirection=1\textdirection=1
+\font\foo={name:DavidCLM}\foo
+\quitvmode\setbox0\hbox{שלום () עולם! Hello () World! 123}
+\START\showbox0\END
