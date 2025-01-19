@@ -54,7 +54,9 @@ function update_tag(file,content,tagname,tagdate)
       "version %d+.%d+, %d%d%d%d-%d%d-%d%d",
       "version " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.md$") then
-    return content
+    return return string.gsub(content,
+      "version %d+.%d+, %d%d%d%d-%d%d-%d%d",
+      "version " .. tagname .. ", " .. tagdate)
   end
 end
 
