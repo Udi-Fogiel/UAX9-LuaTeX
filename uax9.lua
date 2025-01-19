@@ -140,7 +140,6 @@ local new_direction        = function (dir,swap)
                              end
 
 local nodecodes            = { }
-local gluecodes            = nodes.gluecodes
 
 local glyph_code           = node.id("glyph")
 local glue_code            = node.id("glue")
