@@ -52,7 +52,7 @@ local setmetatable = setmetatable
 local formatters = string.formatters
 
 local characters = characters or { }
-local data       = require("chars.lua")
+local data       = require("uax9-data.lua")
 characters.directions  = { }
 
 table.setmetatableindex(characters.directions,function(t,k)
