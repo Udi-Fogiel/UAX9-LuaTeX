@@ -13,9 +13,19 @@ packtdszip = true
 typesetexe = "optex"
 typesetfiles = {"uax9.opm"}
 ctanzip = module
+
 checkconfigs = {"configfiles/config-optex", "configfiles/config-latex", "configfiles/config-plain"}
 specialformats.optex  = {luatex = {binary = "optex", format = ""}}
 specialformats.plain  = {luatex = {binary = "luahbtex", format = ""}}
+
+tdslocations =
+  {
+    "tex/optex/uax9/*.opm",
+    "tex/lualatex/uax9/*.sty",
+    "tex/luatex/uax9/*.tex",
+    "tex/luatex/uax9/*.lua",
+  }
+
 specialtypesetting = specialtypesetting or {}
 function optex_doc()
     run('.', "optex -jobname uax9-doc '\\docgen uax9'")
