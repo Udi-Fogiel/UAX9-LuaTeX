@@ -38,7 +38,7 @@ is added to the `pre_shaping_filter` when you load the package.
 \centerline{\it Udi Fogiel, 2025}
 \parindent0pt\parskip5pt\parfillskip=20ptplus1fill
 The UAX9 TeX packge is an implementation of the \ulink[https://www.unicode.org/reports/tr9/]
-{Unicode Annex \#9} for the \OpTeX, \LaTeX/ and Plain \LuaTeX/ formats. It allows to typesset
+{Unicode Annex \#9} for the \OpTeX, \LaTeX/ and Plain \LuaTeX/ formats. It allows to typeset
 bidirectional documents without the need of a special markup.
 
 \printdoctail uax9.opm % prints the documentation written after \_endcode
