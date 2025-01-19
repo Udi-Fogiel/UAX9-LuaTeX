@@ -160,18 +160,14 @@ local maximum_stack        = 0xFF
 
 local a_directions         = luatexbase.new_attribute('directions')
 
--- local directions           = typesetters.directions
--- local setcolor             = directions.setcolor
--- local getfences            = directions.getfences
-
-local remove_controls      = true  -- directives.register("typesetters.directions.removecontrols",function(v) remove_controls  = v end)
------ analyze_fences       = true  directives.register("typesetters.directions.analyzefences", function(v) analyze_fences   = v end)
+local remove_controls      = true
+----- analyze_fences       = true
 
 local report_directions    = function(...) end
 
-local trace_directions     = false -- trackers.register("typesetters.directions",         function(v) trace_directions = v end)
-local trace_details        = false -- trackers.register("typesetters.directions.details", function(v) trace_details    = v end)
-local trace_list           = false -- trackers.register("typesetters.directions.list",    function(v) trace_list       = v end)
+local trace_directions     = false
+local trace_details        = false
+local trace_list           = false
 
 -- strong (old):
 --
