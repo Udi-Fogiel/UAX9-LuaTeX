@@ -1,6 +1,6 @@
 ConTeXt, where this implementation of the UAX9 originates, is
 licensed under the GPL version 2.0 (exactly). As a derived work, anything
-the UAX9 TeX package adds to that is also subject to the same license at the same
+the UAX9 LuaTeX package adds to that is also subject to the same license at the same
 version. The “any later version” clause as used by the FSF in the license text
 *does not apply* to either ConTeXt or UAX9, despite being kept around in
 the license text given below.

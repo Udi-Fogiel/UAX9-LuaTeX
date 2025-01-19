@@ -55,7 +55,7 @@ local setmetatable = setmetatable
 local formatters = string.formatters
 
 local characters = characters or { }
-local data       = require("uax9-data.lua")
+local data       = require("unibidi-lua-data.lua")
 characters.directions  = { }
 
 table.setmetatableindex(characters.directions,function(t,k)
@@ -1071,6 +1071,8 @@ end
 local analyze_fences = false
 local function process(head,where,direction)
     if where == "fin_row" then return true end
+    if where == "align_set" then head = node.first_glyph(head) print(head) end
+    if not head then return true end
     head = todirect(head)
     local list, size = build_list(head,where)
     local baselevel, dirfound = get_baselevel(head,list,size,direction)
@@ -1127,12 +1129,12 @@ local function interface()
         if scan_keyword('enable') then
             if not enabled then
                 enabled = true
-                luatexbase.add_to_callback("pre_shaping_filter", process, "UAX9")
+                luatexbase.add_to_callback("pre_shaping_filter", process, "unibidi-lua.process")
             end
         elseif scan_keyword('disable') then
             if enabled then
                 enabled = false
-                luatexbase.remove_from_callback("pre_shaping_filter", "UAX9")
+                luatexbase.remove_from_callback("pre_shaping_filter", "unibidi-lua.process")
             end
         elseif scan_keyword('fences') then
             scan_keyword('=')
@@ -1148,7 +1150,7 @@ local function interface()
   
     local tok = get_next()
     if tok.tok ~= relax.tok then
-        texerror("uax9: wrong syntax in \\uax9",
+        tex.error("unibidi-lua: wrong syntax in \\unibidilua",
                 {"There's a '" .. (tok.csname or uni_char(tok.mode)) .. "' out of place." })
         put_next(tok)
     end
@@ -1156,13 +1158,13 @@ local function interface()
 end
 
 do
-  if token.is_defined('uaxnine') then
-      texio.write_nl('log', "uax9: redefining \\uaxnine")
+  if token.is_defined('unibidilua') then
+      texio.write_nl('log', "unibidi-lua: redefining \\unibidilua")
   end
   local function_table = lua.get_functions_table()
-  local luafnalloc = luatexbase and luatexbase.new_luafunction and luatexbase.new_luafunction('uaxnine') or #function_table + 1
-  token.set_lua('uaxnine', luafnalloc)
+  local luafnalloc = luatexbase and luatexbase.new_luafunction and luatexbase.new_luafunction('unibidilua') or #function_table + 1
+  token.set_lua('unibidilua', luafnalloc)
   function_table[luafnalloc] = interface
 end
 
-luatexbase.add_to_callback("pre_shaping_filter", process, "UAX9")
+luatexbase.add_to_callback("pre_shaping_filter", process, "unibidi-lua")

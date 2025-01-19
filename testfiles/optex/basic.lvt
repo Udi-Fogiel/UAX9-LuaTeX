@@ -1,5 +1,5 @@
 \input{regression-test.tex}
-\load[uax9]
+\load[unibidi-lua]
 \pardirection=1\textdirection=1
 \font\foo={name:DavidCLM}\foo
 \quitvmode\setbox0\hbox{שלום () עולם! Hello () World! 123}
