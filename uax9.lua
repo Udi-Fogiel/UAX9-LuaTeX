@@ -122,6 +122,8 @@ local remove_node          = node.direct.remove
 local insertnodeafter      = node.direct.insert_after
 local insertnodebefore     = node.direct.insert_before
 
+local getfont              = node.direct.getfont
+
 local todirect = node.direct.todirect
 local tonode = node.direct.tonode
 
@@ -978,10 +980,13 @@ local function apply_to_list(list,size,head,pardir)
         else
             properties[current] = { directions = true }
         end
-        if id == glyph_code then
-            local mirror = entry.mirror
-            if mirror then
-                setchar(current,mirror)
+        if id == glyph_code and entry.mirror then
+            local curr_font = getfont(current)
+            if curr_font > 0 and font.fonts[curr_font].properties then
+                local font_mode = font.fonts[curr_font].properties.mode
+                if font_mode ~= 'harf' and font_mode ~= 'plug' then
+                    setchar(current,entry.mirror)
+                end
             end
             if trace_directions then
                 local direction = entry.direction
