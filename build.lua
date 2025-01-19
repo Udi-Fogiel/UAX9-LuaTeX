@@ -7,8 +7,9 @@ module = "uax9"
 stdengine    = "luatex"
 checkengines = {"luatex"}
 checkruns = 1
-sourcefiles = {"*.opm", "*.sty", "*.lua", "*.tex"}
+sourcefiles = {"*.opm", "*.sty", "*.lua", "uax9.tex"}
 installfiles = sourcefiles
+textfiles = {"*.md", "COPYING"}
 packtdszip = true
 typesetexe = "optex"
 typesetfiles = {"uax9.opm"}
@@ -29,7 +30,8 @@ tdslocations =
 
 specialtypesetting = specialtypesetting or {}
 function optex_doc()
-    run('.', "optex -jobname uax9-doc '\\docgen uax9'")
+    local error  = run('.', "optex -jobname uax9-doc '\\docgen uax9'")
+    return error
 end
 specialtypesetting["uax9.opm"] = {func = optex_doc}
 
