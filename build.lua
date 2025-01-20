@@ -10,7 +10,6 @@ checkruns = 1
 sourcefiles = {"*.opm", "*.sty", "*.lua", "unibidi-lua.tex"}
 installfiles = sourcefiles
 textfiles = {"*.md", "COPYING"}
-packtdszip = true
 typesetexe = "optex"
 typesetfiles = {"unibidi-lua.opm"}
 ctanzip = module
