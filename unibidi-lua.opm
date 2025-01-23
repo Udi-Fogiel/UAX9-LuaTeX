@@ -1,5 +1,6 @@
 % Optional comments
-\_codedecl \unibidilua {Unicode Bidi Algorithm for OpTeX <0.1, 2025-01-19>}
+\_def \_unibidilua_version {0.1, 2025-01-19}
+\_codedecl \unibidilua {Unicode Bidi Algorithm for OpTeX <\_unibidilua_version>}
 
 \_initunifonts
 \_directlua{require('unibidi-lua.lua')}
@@ -34,7 +35,7 @@ is added to the `pre_shaping_filter` when you load the package.
 \load [doc]
 \overfullrule=0pt
 \tit Unicode Bidi Algorithm Implementation for \OpTeX, \LaTeX, and Plain
-\hfill Version: 0.1, 2025-01-19 \par
+\hfill Version: \_unibidilua_version \par
 \centerline{\it Udi Fogiel, 2025}
 \parindent0pt\parskip5pt\parfillskip=20ptplus1fill
 The unibidi-lua LuTeX packge is an implementation of the \ulink[https://www.unicode.org/reports/tr9/]

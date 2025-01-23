@@ -7,61 +7,85 @@ module = "unibidi-lua"
 stdengine    = "luatex"
 checkengines = {"luatex"}
 checkruns = 1
-sourcefiles = {"*.opm", "*.sty", "*.lua", "unibidi-lua.tex"}
+sourcefiles = {"*.opm", "*.sty", "*.lua", module .. ".tex"}
 installfiles = sourcefiles
+auxfiles = {"*.aux", "*.lof", "*.lot", "*.toc", '*.ref'}
+docfiles = {module .. '-doc.pdf'}
 textfiles = {"*.md", "COPYING"}
 typesetexe = "optex"
-typesetfiles = {"unibidi-lua.opm"}
+typesetfiles = {module .. ".opm"}
 ctanzip = module
 tdsroot = "luatex"
 
-checkconfigs = {"configfiles/config-optex", "configfiles/config-latex", "configfiles/config-plain"}
+checkconfigs = {
+    "configfiles/config-optex",
+    "configfiles/config-latex",
+    "configfiles/config-plain",
+    "configfiles/config-nil",
+}
+
 specialformats = specialformats or { }
 specialformats.optex  = {luatex = {binary = "optex", format = ""}}
 specialformats.plain  = {luatex = {binary = "luahbtex", format = ""}}
 
 tdslocations =
   {
-    "tex/optex/unibidi-lua/*.opm",
-    "tex/lualatex/unibidi-lua/*.sty",
-    "tex/luatex/unibidi-lua/*.tex",
-    "tex/luatex/unibidi-lua/*.lua",
+    "tex/optex/" .. module .. "/*.opm",
+    "tex/lualatex/" .. module .. "/*.sty",
+    "tex/luatex/" .. module .. "/*.tex",
+    "tex/luatex/" .. module .. "/*.lua",
   }
 
-typesetopts = "-interaction=nonstopmode -jobname unibidi-lua-doc"
-typesetcmds = "\\docgen unibidi-lua \\skiptoeol"
+specialtypesetting = specialtypesetting or {}
+function optex_doc()
+    local error_level = 0
+    if not direxists('./build') then
+        error_level = error_level + mkdir('./build')
+    end
+    if not direxists('./build/doc') then
+        error_level = error_level + mkdir('./build/doc')
+    end
+    error_level = error_level + cp('*opm', '.', './build/doc')
+    error_level = error_level + run('./build/doc', "optex -jobname " .. module .. "-doc '\\docgen " .. module .. "'")
+    error_level = error_level + run('./build/doc', "optex -jobname " .. module .. "-doc '\\docgen " .. module .. "'")
+    error_level = error_level + run('./build/doc', "optex -jobname " .. module .. "-doc '\\docgen " .. module .. "'")
+    error_level = error_level + cp('*pdf', './build/doc', '.')
+    return error_level
+end
+specialtypesetting[module .. ".opm"] = {func = optex_doc}
 
 tagfiles = sourcefiles
 function update_tag(file,content,tagname,tagdate)
   if string.match(file, "%.opm$") then
     return string.gsub(content,
-      "Unicode Bidi Algorithm for OpTeX <%d+.%d+, %d%d%d%d-%d%d-%d%d",
-      "Unicode Bidi Algorithm for OpTeX <" .. tagname .. ", " .. tagdate)
+      "version {%d+%.%d+, %d%d%d%d%-%d%d%-%d%d",
+      "version {" .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.lua$") then
     return string.gsub(content,
-      "version   = %d+.%d+, %d%d%d%d-%d%d-%d%d",
+      "version   = %d+%.%d+, %d%d%d%d%-%d%d%-%d%d",
       "version   = " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.sty$") then
     return string.gsub(content,
-      "{unibidi-lua} [%d%d%d%d-%d%d-%d%d v%d+.%d+.%d+",
-      "{unibidi-lua} [" .. tagdate .. " v" .. tagname)
+      "{" .. module .. "} [%d%d%d%d%-%d%d%-%d%d v%d+%.%d+",
+      "{" .. module .. "} [" .. tagdate .. " v" .. tagname)
   elseif string.match(file, "%.tex$") then
     return string.gsub(content,
-      "version %d+.%d+, %d%d%d%d-%d%d-%d%d",
+      "version %d+%.%d+, %d%d%d%d%-%d%d%-%d%d",
       "version " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.md$") then
     return string.gsub(content,
-      "version %d+.%d+, %d%d%d%d-%d%d-%d%d",
+      "version %d+%.%d+, %d%d%d%d%-%d%d%-%d%d",
       "version " .. tagname .. ", " .. tagdate)
   end
 end
 
 function pre_release()
     call({"."}, "tag")
-    call({"."}, "ctan", {config = options['config']})
-    rm(".", "*.tds.zip")
+    packtdszip = true
+    call({"."}, "ctan", {})
+    --packtdszip = false
+    --call({"."}, "ctan", {config = {"configfiles/config-nil"}})
 end
 
 target_list["prerelease"] = { func = pre_release, 
 			desc = "update tags, generate pdfs, build zip for ctan"}
-
