@@ -66,8 +66,8 @@ function update_tag(file,content,tagname,tagdate)
       "version   = " .. tagname .. ", " .. tagdate)
   elseif string.match(file, "%.sty$") then
     return string.gsub(content,
-      "{" .. module .. "} [%d%d%d%d%-%d%d%-%d%d v%d+%.%d+",
-      "{" .. module .. "} [" .. tagdate .. " v" .. tagname)
+      "} %[%d%d%d%d%-%d%d%-%d%d v%d+%.%d+\n",
+      "} [" .. tagdate .. " v" .. tagname .. "\n")
   elseif string.match(file, "%.tex$") then
     return string.gsub(content,
       "version %d+%.%d+, %d%d%d%d%-%d%d%-%d%d",
